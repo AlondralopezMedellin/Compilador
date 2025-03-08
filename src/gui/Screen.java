@@ -1,5 +1,6 @@
 package gui;
 
+import logic.Archivos;
 import logic.NumeroLinea;
 
 /*
@@ -11,9 +12,10 @@ import logic.NumeroLinea;
 public class Screen extends javax.swing.JFrame {
 
     NumeroLinea obn;
-    
+    private Archivos archivos;
     public Screen() {
         initComponents();
+        archivos = new Archivos(textArea);
         obn = new NumeroLinea(textArea);
         textScrollPane.setRowHeaderView(obn);
     }
@@ -223,6 +225,11 @@ public class Screen extends javax.swing.JFrame {
         openFile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/menuBar-icons/open-file.png"))); // NOI18N
         openFile.setText("Open File...");
         openFile.setPreferredSize(new java.awt.Dimension(200, 22));
+        openFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openFileActionPerformed(evt);
+            }
+        });
         fileMenu.add(openFile);
         fileMenu.add(fileSeparator2);
 
@@ -237,6 +244,11 @@ public class Screen extends javax.swing.JFrame {
         fileMenu.add(save);
 
         saveAs.setText("Save As...");
+        saveAs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveAs);
         fileMenu.add(fileSeparator3);
 
@@ -365,7 +377,7 @@ public class Screen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        // TODO add your handling code here:
+        archivos.guardarArchivo();
     }//GEN-LAST:event_saveActionPerformed
 
     private void undoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoActionPerformed
@@ -381,7 +393,7 @@ public class Screen extends javax.swing.JFrame {
     }//GEN-LAST:event_aboutActionPerformed
 
     private void newFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFileActionPerformed
-        // TODO add your handling code here:
+        archivos.nuevoArchivo();
     }//GEN-LAST:event_newFileActionPerformed
 
     private void toolBarSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolBarSaveActionPerformed
@@ -403,6 +415,14 @@ public class Screen extends javax.swing.JFrame {
     private void cutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cutActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cutActionPerformed
+
+    private void openFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileActionPerformed
+        archivos.abrirArchivo();
+    }//GEN-LAST:event_openFileActionPerformed
+
+    private void saveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsActionPerformed
+        archivos.guardarComo();
+    }//GEN-LAST:event_saveAsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem about;
