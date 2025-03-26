@@ -1,7 +1,10 @@
 package gui;
 
+import javax.swing.ImageIcon;
 import logic.Archivos;
 import logic.NumeroLinea;
+import logic.Zoom;
+import logic.UndoRedo;
 
 /*
  * @author Alondra
@@ -13,12 +16,59 @@ public class Screen extends javax.swing.JFrame {
 
     NumeroLinea obn;
     private Archivos archivos;
+    private Zoom zoom;
+    private UndoRedo unre;
     public Screen() {
         initComponents();
+        setIconImage(new ImageIcon(getClass().getResource("/gui/codigo.png")).getImage());/**/
         archivos = new Archivos(textArea);
         obn = new NumeroLinea(textArea);
         textScrollPane.setRowHeaderView(obn);
+        setTitle("Compiler");
+        zoom = new Zoom(textArea);
+        unre = new UndoRedo(textArea);
+        textArea.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+    @Override
+    public void insertUpdate(javax.swing.event.DocumentEvent e) {
+        textoModificado();
     }
+
+    @Override
+    public void removeUpdate(javax.swing.event.DocumentEvent e) {
+        textoModificado();
+    }
+
+    @Override
+    public void changedUpdate(javax.swing.event.DocumentEvent e) {
+        textoModificado();
+    }
+    });
+
+
+    }
+    private void textoModificado() {
+    String cadena = textArea.getText().trim(); // Eliminamos espacios al inicio y final
+    System.out.println(cadena);
+    /*int punteroInicio = 0;
+    int punteroFinal = 0;
+    
+    while (punteroFinal < cadena.length()) {
+        // Mover el puntero final hasta encontrar un espacio o el final de la cadena
+        while (punteroFinal < cadena.length() && cadena.charAt(punteroFinal) != ' ') {
+            punteroFinal++;
+        }
+        
+        // Extraer la palabra y mostrarla en consola
+        String palabra = cadena.substring(punteroInicio, punteroFinal);
+        System.out.print("  Componente: " + palabra);
+        
+        // Mover punteroInicio al siguiente carácter después del espacio
+        punteroFinal++; // Saltar el espacio
+        punteroInicio = punteroFinal;
+    }*/
+}
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,6 +79,8 @@ public class Screen extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        Borrar = new javax.swing.JMenuItem();
         toolBarPanel = new javax.swing.JPanel();
         toolBar = new javax.swing.JToolBar();
         toolBarSeparator1 = new javax.swing.JToolBar.Separator();
@@ -81,6 +133,9 @@ public class Screen extends javax.swing.JFrame {
         helpMenu = new javax.swing.JMenu();
         about = new javax.swing.JMenuItem();
 
+        Borrar.setText("borrar");
+        jPopupMenu1.add(Borrar);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         toolBar.setRollover(true);
@@ -121,6 +176,11 @@ public class Screen extends javax.swing.JFrame {
         toolBarUndo.setFocusable(false);
         toolBarUndo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         toolBarUndo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        toolBarUndo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toolBarUndoActionPerformed(evt);
+            }
+        });
         toolBar.add(toolBarUndo);
         toolBar.add(toolBarFiller5);
 
@@ -159,11 +219,15 @@ public class Screen extends javax.swing.JFrame {
         );
         toolBarPanelLayout.setVerticalGroup(
             toolBarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(toolBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        textPanel.setComponentPopupMenu(jPopupMenu1);
+
         textArea.setColumns(20);
+        textArea.setDocument(textArea.getDocument());
         textArea.setRows(5);
+        textArea.setComponentPopupMenu(jPopupMenu1);
         textScrollPane.setViewportView(textArea);
 
         javax.swing.GroupLayout textPanelLayout = new javax.swing.GroupLayout(textPanel);
@@ -307,6 +371,11 @@ public class Screen extends javax.swing.JFrame {
         zoomIn.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PLUS, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         zoomIn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/menuBar-icons/zoom-in.png"))); // NOI18N
         zoomIn.setText("Zoom In");
+        zoomIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomInActionPerformed(evt);
+            }
+        });
         viewMenu.add(zoomIn);
 
         zoomOut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_MINUS, java.awt.event.InputEvent.CTRL_DOWN_MASK));
@@ -385,7 +454,7 @@ public class Screen extends javax.swing.JFrame {
     }//GEN-LAST:event_undoActionPerformed
 
     private void zoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutActionPerformed
-        // TODO add your handling code here:
+        zoom.zoomOutActionPerformed(evt);
     }//GEN-LAST:event_zoomOutActionPerformed
 
     private void aboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutActionPerformed
@@ -394,6 +463,7 @@ public class Screen extends javax.swing.JFrame {
 
     private void newFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFileActionPerformed
         archivos.nuevoArchivo();
+        setTitle("Compiler");
     }//GEN-LAST:event_newFileActionPerformed
 
     private void toolBarSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolBarSaveActionPerformed
@@ -405,7 +475,7 @@ public class Screen extends javax.swing.JFrame {
     }//GEN-LAST:event_toolBarNewFileActionPerformed
 
     private void toolBarRedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolBarRedoActionPerformed
-        // TODO add your handling code here:
+        unre.Redo(evt);
     }//GEN-LAST:event_toolBarRedoActionPerformed
 
     private void toolBarRunProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolBarRunProjectActionPerformed
@@ -417,14 +487,26 @@ public class Screen extends javax.swing.JFrame {
     }//GEN-LAST:event_cutActionPerformed
 
     private void openFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileActionPerformed
-        archivos.abrirArchivo();
+        String fileName = archivos.abrirArchivo();
+        if (fileName != null) {
+            setTitle(fileName); // Actualizar el título con el nombre del archivo
+        }
     }//GEN-LAST:event_openFileActionPerformed
 
     private void saveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsActionPerformed
         archivos.guardarComo();
     }//GEN-LAST:event_saveAsActionPerformed
 
+    private void toolBarUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toolBarUndoActionPerformed
+        unre.Undo(evt);
+    }//GEN-LAST:event_toolBarUndoActionPerformed
+
+    private void zoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomInActionPerformed
+        zoom.zoomInActionPerformed(evt);
+    }//GEN-LAST:event_zoomInActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem Borrar;
     private javax.swing.JMenuItem about;
     private javax.swing.JMenuItem copy;
     private javax.swing.JMenuItem cut;
@@ -437,6 +519,7 @@ public class Screen extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator fileSeparator2;
     private javax.swing.JPopupMenu.Separator fileSeparator3;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JPanel lexicalPanel;
     private javax.swing.JScrollPane lexicalScrollPane;
     private javax.swing.JTextArea lexicalTextArea;

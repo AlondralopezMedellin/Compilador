@@ -1,4 +1,3 @@
-
 package logic;
 
 import java.io.File;
@@ -10,7 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 
 public class Archivos {
-     private File ficheroActual;
+    private File ficheroActual;
     private JTextArea textArea;
 
     public Archivos(JTextArea textArea) {
@@ -22,7 +21,7 @@ public class Archivos {
         ficheroActual = null;
     }
 
-    public void abrirArchivo() {
+    public String abrirArchivo() {
         JFileChooser fc = new JFileChooser();
         fc.setMultiSelectionEnabled(false);
         fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -37,12 +36,16 @@ public class Archivos {
                     contenido.append((char) valor);
                 }
                 textArea.setText(contenido.toString());
+                return ficheroActual.getName(); // Devolvemos el nombre del archivo
             } catch (FileNotFoundException ex) {
                 System.out.println("Archivo no encontrado: " + ex.getMessage());
+                return null;
             } catch (IOException ex) {
                 System.out.println("Error de lectura: " + ex.getMessage());
+                return null;
             }
         }
+        return null; // Si no se seleccionó un archivo, devolvemos null
     }
 
     public void guardarArchivo() {
